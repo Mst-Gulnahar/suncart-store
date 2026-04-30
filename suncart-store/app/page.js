@@ -3,7 +3,7 @@ import products from '../data/products.json';
 import Popular from '../components/Popular';
 
 export default function Home() {
-  // Display products in the card section
+  // Display the first 6 products
   const allProducts = products.slice(0, 6);
 
   return (
@@ -42,7 +42,7 @@ export default function Home() {
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-white leading-none mb-6 drop-shadow-2xl">
               SUN<br/>CART
             </h1>
-            <Link href="/products" className="btn bg-tangerine border-none text-white hover:bg-dragonfruit rounded-full px-10 md:px-12 shadow-2xl scale-105 md:scale-110">
+            <Link href="#essentials" className="btn bg-tangerine border-none text-white hover:bg-dragonfruit rounded-full px-10 md:px-12 shadow-2xl scale-105 md:scale-110 transition-transform active:scale-95">
               Shop Now
             </Link>
           </div>
@@ -59,43 +59,60 @@ export default function Home() {
       </section>
 
       {/* 📦 ALL SUMMER ESSENTIALS SECTION */}
-      <section className="mb-24">
+      <section id="essentials" className="mb-24 scroll-mt-10">
         <div className="flex justify-between items-baseline mb-12 px-4">
           <h2 className="text-5xl font-black tracking-tighter text-dragonfruit">Summer Essentials</h2>
-          <p className="text-tangerine font-bold text-lg hidden md:block">Explore the full collection ✨</p>
+          <p className="text-tangerine font-bold text-lg hidden md:block italic underline decoration-sun decoration-4 underline-offset-8">Explore the full collection ✨</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
           {allProducts.map((product) => (
             <div key={product.id} className="group flex flex-col">
-              {/* Outer card */}
-              <div className="bg-white rounded-[3rem] p-5 shadow-sm group-hover:shadow-xl transition-all duration-500 border-2 border-transparent group-hover:border-raspberry/10 relative overflow-hidden flex flex-col flex-1">
+              
+              {/* Tightened Card: Hover border changed to raspberry/5 for a subtler glow */}
+              <div className="bg-white rounded-[3rem] p-5 shadow-sm group-hover:shadow-lg transition-all duration-300 border-2 border-transparent group-hover:border-raspberry/5 relative overflow-hidden flex flex-col flex-1">
                  
-                 {/* Product Image Container */}
-                 <div className="overflow-hidden rounded-[2.5rem] mb-6 aspect-square w-full relative">
+                 {/* Product Image Container: Constrained size */}
+                 <div className="overflow-hidden rounded-[2.5rem] mb-6 aspect-square w-full relative bg-gray-50">
                     <img 
                         src={product.image} 
                         alt={product.name} 
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
+                    {/* Hover Overlay Badge - Made smaller */}
+                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span className="bg-white/90 backdrop-blur text-dragonfruit font-black px-3 py-1.5 rounded-full text-[10px] shadow-sm uppercase tracking-tighter">
+                           Quick View
+                        </span>
+                    </div>
                  </div>
 
-                 {/* Content */}
-                 <div className="px-3 flex flex-col flex-1">
+                 {/* Content Section */}
+                 <div className="px-2 flex flex-col flex-1">
                     <div className="flex justify-between items-start mb-2">
                         <div className="flex-1 mr-2">
-                            <h3 className="font-black text-2xl text-neutral leading-tight line-clamp-1">{product.name}</h3>
-                            <p className="text-xs font-bold text-tangerine uppercase tracking-[0.2em] mt-1">{product.brand}</p>
+                            <h3 className="font-black text-xl text-neutral leading-tight line-clamp-1 group-hover:text-dragonfruit transition-colors uppercase tracking-tighter">
+                                {product.name}
+                            </h3>
+                            <p className="text-[10px] font-bold text-tangerine uppercase tracking-widest mt-1 italic">
+                              {product.brand}
+                            </p>
                         </div>
-                        <span className="text-3xl font-black text-dragonfruit flex-shrink-0">${product.price}</span>
+                        <span className="text-2xl font-black text-dragonfruit flex-shrink-0">
+                          ${product.price}
+                        </span>
                     </div>
 
-                    <div className="mt-auto pt-5 border-t border-dashed border-gray-200">
-                      <div className="flex justify-between items-center pb-2">
-                        <div className="flex items-center gap-1.5 font-black text-sun bg-sun/10 px-3 py-1 rounded-full text-sm">
+                    <div className="mt-auto pt-4 border-t border-dashed border-gray-100">
+                      <div className="flex justify-between items-center pb-1">
+                        <div className="flex items-center gap-1 font-black text-sun bg-sun/10 px-2.5 py-1 rounded-full text-xs">
                             <span>★</span> {product.rating}
                         </div>
-                        <Link href={`/products/${product.id}`} className="btn bg-dragonfruit border-none text-white btn-md rounded-2xl px-8 hover:bg-tangerine transition-colors">
+                        
+                        <Link 
+                            href={`/products/${product.id}`} 
+                            className="btn bg-dragonfruit border-none text-white btn-sm rounded-xl px-6 hover:bg-tangerine transition-all active:scale-95 text-xs font-black shadow-md shadow-dragonfruit/10"
+                        >
                             Details
                         </Link>
                       </div>
@@ -106,8 +123,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+      
       <Popular />
-
     </div>
   );
 }
