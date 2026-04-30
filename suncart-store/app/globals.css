@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+  /* Define Custom Colors */
+  --color-sun: #F9C12F;
+  --color-dragonfruit: #DA1C5C;
+  --color-tangerine: #F15A29;
+  --color-raspberry: #FF5DD4;
+  --color-sunset: #FF9846;
+
+  /* Map Palette to DaisyUI Functional Variables */
+  --color-primary: var(--color-dragonfruit);
+  --color-secondary: var(--color-sun);
+  --color-accent: var(--color-tangerine);
+  --color-info: var(--color-raspberry);
+  --color-success: var(--color-sunset);
+  
+  /* Set the Base Background (Cream) */
+  --color-base-100: #FFF5E6;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-base-100);
+    color: #2A2E37; /* Neutral grey from your palette */
+    font-family: Arial, Helvetica, sans-serif;
+  }
+}
