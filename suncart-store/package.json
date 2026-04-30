@@ -1,9 +1,9 @@
 {
   "name": "suncart-store",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
+    "server": "nodemon server.js",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -17,10 +17,8 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "nodemon": "^3.1.0",
     "@tailwindcss/postcss": "^4",
-    "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.4",
     "tailwindcss": "^4"
   }
 }

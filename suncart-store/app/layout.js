@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/NavBar"; // Import the new Navbar
+import Navbar from "../components/NavBar"; 
+import Footer from "../components/Footer"; 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +25,17 @@ export default function RootLayout({ children }) {
       data-theme="suncart" 
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col pt-28"> {/* Added pt-28 to clear the fixed navbar */}
+      <body className="min-h-full flex flex-col pt-28"> 
+        {/*  Navbar */}
         <Navbar />
-        {children}
+
+        {/* Main Content Area */}
+        <main className="flex-grow">
+          {children}
+        </main>
+
+        {/* Footer */}
+        <Footer />
       </body>
     </html>
   );

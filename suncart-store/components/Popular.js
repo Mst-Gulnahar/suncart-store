@@ -1,8 +1,11 @@
+"use client";
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import products from '../data/products.json';
 
 export default function Popular() {
-  // Show exactly 3 popular products
+  const [activeIndex, setActiveIndex] = useState(1);
+  const [isPaused, setIsPaused] = useState(false); // New state to pause on hover
   const popularProducts = products.slice(0, 3);
 
   const brands = [
@@ -12,80 +15,140 @@ export default function Popular() {
     { name: "AquaCarry", logo: "🎒", desc: "Waterproof Tech" }
   ];
 
+  // ⏱️ Center Shifter Logic: Changes focus every 5 seconds
+  useEffect(() => {
+    if (isPaused) return; // Stop timer if user is interacting
+
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % 3);
+    }, 5000); // 5 seconds as requested
+
+    return () => clearInterval(interval);
+  }, [isPaused]); // Restarts when hover ends
+
   return (
-    <section className="space-y-24 mb-20">
+    <section 
+      className="space-y-32 mb-20 overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       
-      {/* 🔥 POPULAR PRODUCTS SECTION */}
-      <div>
-        <div className="flex flex-col mb-12 px-4">
-          <span className="text-tangerine font-bold uppercase tracking-widest text-sm mb-2">Trending Now</span>
-          <h2 className="text-5xl font-black tracking-tighter text-dragonfruit">🔥 Popular Products</h2>
+      {/* 🔥 UNIQUE POPULAR PRODUCTS SHOWCASE */}
+      <div className="relative py-10">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-full bg-sun/5 -rotate-2 rounded-[6rem] -z-10"></div>
+        
+        <div className="text-center mb-16">
+          <span className="inline-block px-4 py-1 rounded-full bg-tangerine text-white text-xs font-black uppercase tracking-[0.3em] mb-4 animate-bounce">
+            Featured Deals
+          </span>
+          <h2 className="text-6xl md:text-7xl font-black tracking-tighter text-dragonfruit">
+            The <span className="text-sun">Hot</span> List
+          </h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {popularProducts.map((product) => (
-            <div key={product.id} className="group bg-white rounded-[3rem] p-6 shadow-sm border-2 border-transparent hover:border-sun transition-all duration-500">
-               <div className="overflow-hidden rounded-[2.5rem] mb-6 aspect-square relative">
-                  <img 
-                      src={product.image} 
-                      alt={product.name} 
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-               </div>
-               <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-black text-2xl text-neutral leading-tight">{product.name}</h3>
-                  <span className="text-2xl font-black text-dragonfruit">${product.price}</span>
-               </div>
-               <div className="flex justify-between items-center border-t border-dashed border-gray-200 pt-5 mt-4">
-                  <div className="flex items-center gap-1.5 font-black text-sun bg-sun/10 px-3 py-1 rounded-full text-sm">
-                      <span>★</span> {product.rating}
-                  </div>
-                  <Link href={`/products/${product.id}`} className="btn bg-dragonfruit border-none text-white rounded-2xl px-6 hover:bg-tangerine transition-colors">
-                      View Details
-                  </Link>
-               </div>
-            </div>
-          ))}
+        <div className="flex flex-col lg:flex-row justify-center items-center gap-12 lg:gap-4 px-4 min-h-[600px]">
+          {popularProducts.map((product, index) => {
+            const isActive = index === activeIndex;
+            
+            return (
+              <div 
+                key={product.id} 
+                className={`
+                  relative group w-full max-w-sm
+                  transition-all duration-1000 ease-in-out
+                  ${isActive 
+                    ? 'lg:scale-110 z-30 lg:rotate-0' 
+                    : index < activeIndex 
+                      ? 'lg:scale-90 z-10 lg:-rotate-6 lg:-translate-x-4 opacity-60' 
+                      : 'lg:scale-90 z-10 lg:rotate-6 lg:translate-x-4 opacity-60'
+                  }
+                  hover:opacity-100 hover:z-40
+                `}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-tr from-sun to-tangerine rounded-[3.5rem] blur-2xl transition-opacity duration-1000 ${isActive ? 'opacity-30 animate-spin-slow' : 'opacity-0'}`}></div>
+
+                <div className={`relative bg-white rounded-[3.5rem] p-4 shadow-2xl border-4 transition-colors duration-1000 ${isActive ? 'border-sun' : 'border-white'}`}>
+                   
+                   <div className={`absolute top-6 left-6 z-20 text-white w-10 h-10 rounded-full flex items-center justify-center font-black shadow-lg transition-colors duration-1000 ${isActive ? 'bg-dragonfruit' : 'bg-neutral'}`}>
+                      #{index + 1}
+                   </div>
+
+                   <div className="overflow-hidden rounded-[2.8rem] aspect-[4/5] relative bg-gray-50">
+                      <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                      />
+                   </div>
+
+                   <div className="p-6 text-center">
+                      <h3 className="font-black text-2xl text-neutral mb-1 uppercase tracking-tighter">{product.name}</h3>
+                      <p className="text-dragonfruit font-black text-3xl mb-4">${product.price}</p>
+                      
+                      <Link 
+                        href={`/products/${product.id}`} 
+                        className={`btn btn-block border-none text-white rounded-2xl transition-all ${isActive ? 'bg-dragonfruit hover:bg-tangerine' : 'bg-neutral hover:bg-dragonfruit'}`}
+                      >
+                        {isActive ? 'Grab This Deal 🔥' : 'View Details'}
+                      </Link>
+                   </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* ➕ EXTRA SECTION: SUMMER CARE TIPS */}
-      <div className="bg-sun/20 rounded-[4rem] p-12 border-4 border-dashed border-sun/50">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-                <h2 className="text-4xl font-black text-dragonfruit mb-6">☀️ Summer Care Tips</h2>
-                <ul className="space-y-4">
-                    <li className="flex gap-4 items-start">
-                        <span className="bg-sun p-2 rounded-lg text-xl">💧</span>
-                        <p className="text-neutral font-medium"><b>Hydration is Key:</b> Drink at least 3 liters of water to keep your skin glowing.</p>
-                    </li>
-                    <li className="flex gap-4 items-start">
-                        <span className="bg-sun p-2 rounded-lg text-xl">🧴</span>
-                        <p className="text-neutral font-medium"><b>SPF Always:</b> Reapply sunscreen every 2 hours, even on cloudy days.</p>
-                    </li>
-                    <li className="flex gap-4 items-start">
-                        <span className="bg-sun p-2 rounded-lg text-xl">👒</span>
-                        <p className="text-neutral font-medium"><b>Seek Shade:</b> Wear wide-brimmed hats during peak sun hours (10 AM - 4 PM).</p>
-                    </li>
-                </ul>
-            </div>
-            <div className="hidden lg:block bg-white rounded-[3rem] p-8 shadow-inner">
-                <p className="italic text-tangerine font-bold text-center">"A little glow is fine, but protection is divine! ✨"</p>
+      <div className="relative mx-4">
+        <div className="bg-gradient-to-br from-sun/40 to-tangerine/20 rounded-[4rem] p-12 overflow-hidden">
+            {/* Floating decoration */}
+            <div className="absolute -top-10 -right-10 text-9xl opacity-10 rotate-12">☀️</div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+                <div>
+                    <h2 className="text-5xl font-black text-dragonfruit mb-8 tracking-tighter">Summer Care 101</h2>
+                    <ul className="space-y-6">
+                        {[
+                          { icon: "💧", title: "Hydration", text: "3 liters daily for that beach-ready glow." },
+                          { icon: "🧴", title: "SPF 50+", text: "Your best friend. Reapply every 2 hours." },
+                          { icon: "👒", title: "Protection", text: "Hats & Shades aren't just style; they're armor." }
+                        ].map((tip, i) => (
+                          <li key={i} className="flex gap-5 items-center group">
+                              <span className="bg-white p-4 rounded-3xl text-2xl shadow-sm group-hover:rotate-12 transition-transform">{tip.icon}</span>
+                              <div>
+                                <h4 className="font-black text-neutral text-lg leading-none">{tip.title}</h4>
+                                <p className="text-neutral/70 font-medium text-sm mt-1">{tip.text}</p>
+                              </div>
+                          </li>
+                        ))}
+                    </ul>
+                </div>
+                <div className="bg-white/50 backdrop-blur-md rounded-[3rem] p-10 shadow-xl border border-white/50 text-center">
+                    <p className="text-2xl italic text-dragonfruit font-black leading-relaxed">
+                      "A little glow is fine,<br/>but protection is divine! ✨"
+                    </p>
+                </div>
             </div>
         </div>
       </div>
 
       {/* 🏆 TOP BRANDS SECTION */}
-      <div>
-        <h2 className="text-center text-3xl font-black text-dragonfruit mb-10 tracking-tight underline decoration-sun decoration-4 underline-offset-8">
-            Our Top Brands
-        </h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="px-4">
+        <div className="flex items-center gap-4 mb-12">
+            <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-gray-200"></div>
+            <h2 className="text-2xl font-black text-neutral/30 uppercase tracking-[0.4em]">Official Partners</h2>
+            <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-gray-200"></div>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {brands.map((brand, index) => (
-            <div key={index} className="bg-white p-8 rounded-[2.5rem] border-2 border-gray-100 flex flex-col items-center text-center hover:shadow-xl transition-shadow group">
-                <div className="text-5xl mb-4 group-hover:scale-125 transition-transform">{brand.logo}</div>
-                <h4 className="font-black text-xl text-neutral">{brand.name}</h4>
-                <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">{brand.desc}</p>
+            <div key={index} className="group relative">
+                <div className="absolute inset-0 bg-sun rounded-[2.5rem] translate-y-2 translate-x-2 group-hover:translate-y-0 group-hover:translate-x-0 transition-transform"></div>
+                <div className="relative bg-white p-8 rounded-[2.5rem] border-2 border-neutral flex flex-col items-center text-center transition-transform group-hover:-translate-y-1">
+                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-500">{brand.logo}</div>
+                    <h4 className="font-black text-xl text-neutral">{brand.name}</h4>
+                    <p className="text-[10px] text-tangerine font-black uppercase tracking-widest mt-2">{brand.desc}</p>
+                </div>
             </div>
           ))}
         </div>
