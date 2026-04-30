@@ -1,15 +1,16 @@
 import Link from 'next/link';
 import products from '../data/products.json';
+import Popular from '../components/Popular';
 
 export default function Home() {
-  // Display all 6 products in the card section
+  // Display products in the card section
   const allProducts = products.slice(0, 6);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       
-     {/* 🌅 HERO SECTION */}
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+      {/* 🌅 HERO SECTION */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24">
         
         {/* Main Banner */}
         <div className="md:col-span-2 relative group overflow-hidden rounded-[3.5rem] min-h-[400px] md:min-h-[480px] bg-sun shadow-xl">
@@ -47,7 +48,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Hot Deals */}
+        {/* Hot Deals Card */}
         <div className="md:col-span-2 lg:col-span-1 bg-sunset rounded-[3.5rem] p-10 flex flex-col items-center justify-center text-center relative overflow-hidden border-4 border-white shadow-xl min-h-[300px]">
             <h2 className="text-5xl md:text-6xl font-black text-white rotate-[-8deg] drop-shadow-lg leading-tight">
                 Hot <br/> Deals 🔥
@@ -57,11 +58,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 📦 PRODUCT CARDS SECTION */}
-      <section className="mb-20">
+      {/* 📦 ALL SUMMER ESSENTIALS SECTION */}
+      <section className="mb-24">
         <div className="flex justify-between items-baseline mb-12 px-4">
           <h2 className="text-5xl font-black tracking-tighter text-dragonfruit">Summer Essentials</h2>
-          <p className="text-tangerine font-bold text-lg hidden md:block">Freshly picked for you ✨</p>
+          <p className="text-tangerine font-bold text-lg hidden md:block">Explore the full collection ✨</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
@@ -105,6 +106,7 @@ export default function Home() {
           ))}
         </div>
       </section>
+      <Popular />
 
     </div>
   );
