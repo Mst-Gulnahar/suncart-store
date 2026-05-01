@@ -9,16 +9,18 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@better-auth/cli": "^1.4.21",
     "better-auth": "^1.6.9",
     "daisyui": "^5.5.19",
     "lottie-react": "^2.4.1",
+    "mysql2": "^3.22.3",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0",
     "@tailwindcss/postcss": "^4",
+    "nodemon": "^3.1.0",
     "tailwindcss": "^4"
   }
 }

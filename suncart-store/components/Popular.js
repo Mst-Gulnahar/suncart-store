@@ -5,7 +5,7 @@ import products from '../data/products.json';
 
 export default function Popular() {
   const [activeIndex, setActiveIndex] = useState(1);
-  const [isPaused, setIsPaused] = useState(false); // New state to pause on hover
+  const [isPaused, setIsPaused] = useState(false); 
   const popularProducts = products.slice(0, 3);
 
   const brands = [
@@ -15,16 +15,16 @@ export default function Popular() {
     { name: "AquaCarry", logo: "🎒", desc: "Waterproof Tech" }
   ];
 
-  // ⏱️ Center Shifter Logic: Changes focus every 5 seconds
+  // ⏱️ Center Shifter Logic
   useEffect(() => {
-    if (isPaused) return; // Stop timer if user is interacting
+    if (isPaused) return; 
 
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % 3);
-    }, 5000); // 5 seconds as requested
+    }, 5000); 
 
     return () => clearInterval(interval);
-  }, [isPaused]); // Restarts when hover ends
+  }, [isPaused]);
 
   return (
     <section 
