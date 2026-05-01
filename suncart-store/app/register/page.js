@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { authClient } from "@/lib/auth-client"; // Importing the client you just set up
+import { authClient } from "@/lib/auth-client"; 
 
 export default function RegisterPage() {
   const router = useRouter();
