@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react"; // Added useEffect
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -9,12 +9,15 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
-  // 👁️ State for password visibility toggle
   const [showPassword, setShowPassword] = useState(false);
 
-  // Determine where to send the user after login
-  const callbackURL = searchParams.get("callbackURL") || "/";
+  // Use state for callbackURL to ensure it's stable
+  const [callbackURL, setCallbackURL] = useState("/");
+
+  useEffect(() => {
+    const url = searchParams.get("callbackURL") || "/";
+    setCallbackURL(url);
+  }, [searchParams]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -42,10 +45,15 @@ function LoginForm() {
   };
 
   const handleGoogleLogin = async () => {
-    await authClient.signIn.social({
-      provider: "google",
-      callbackURL: callbackURL, 
-    });
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: callbackURL, 
+      });
+    } catch (err) {
+      setError("Google login failed. Check your console.");
+      console.error(err);
+    }
   };
 
   return (
@@ -92,11 +100,7 @@ function LoginForm() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral/40 hover:text-sun transition-colors"
                 >
-                  {showPassword ? (
-                    <span className="text-xs font-black uppercase">Hide</span>
-                  ) : (
-                    <span className="text-xs font-black uppercase">Show</span>
-                  )}
+                  {showPassword ? "HIDE" : "SHOW"}
                 </button>
               </div>
             </div>
@@ -106,9 +110,7 @@ function LoginForm() {
               disabled={loading}
               className={`btn btn-block bg-sun hover:bg-tangerine border-none text-neutral font-black text-lg shadow-lg shadow-sun/20 rounded-2xl transition-all ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              {loading ? (
-                <span className="loading loading-spinner loading-sm"></span>
-              ) : 'Sign In ☀️'}
+              {loading ? <span className="loading loading-spinner loading-sm"></span> : 'Sign In ☀️'}
             </button>
           </form>
 
@@ -117,9 +119,9 @@ function LoginForm() {
           <button 
             onClick={handleGoogleLogin}
             type="button"
-            className="btn btn-block bg-white border-2 border-neutral/10 rounded-2xl font-black shadow-sm hover:bg-neutral hover:text-white transition-all flex items-center justify-center gap-2 group"
+            className="btn btn-block bg-white border-2 border-neutral/10 rounded-2xl font-black shadow-sm hover:bg-neutral hover:text-white transition-all flex items-center justify-center gap-2"
           >
-            <span>Continue with Google</span>
+            Continue with Google
           </button>
 
           <p className="text-center mt-10 font-bold text-sm text-neutral/60">
@@ -133,11 +135,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center text-sun font-black uppercase tracking-widest">
-        Catching Rays... ☀️
-      </div>
-    }>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-sun font-black uppercase tracking-widest">Catching Rays... ☀️</div>}>
       <LoginForm />
     </Suspense>
   );
