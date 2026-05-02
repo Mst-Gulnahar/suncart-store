@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
@@ -13,6 +13,7 @@ export default function LoginPage() {
   // 👁️ State for password visibility toggle
   const [showPassword, setShowPassword] = useState(false);
 
+  // Determine where to send the user after login
   const callbackURL = searchParams.get("callbackURL") || "/";
 
   const handleLogin = async (e) => {
@@ -67,7 +68,6 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="form-control">
               <label className="label font-black text-xs uppercase tracking-widest text-neutral/40 text-left">Your Email</label>
-              {/* User can type freely here */}
               <input 
                 name="email" 
                 type="email" 
@@ -82,13 +82,11 @@ export default function LoginPage() {
               <div className="relative">
                 <input 
                   name="password" 
-                  // 🔄 Toggle type between "password" and "text"
                   type={showPassword ? "text" : "password"} 
                   placeholder="••••••••" 
                   className="input input-bordered w-full bg-gray-50 rounded-2xl border-2 focus:border-sun outline-none transition-all pr-12" 
                   required 
                 />
-                {/* 👁️ Toggle Button */}
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -130,5 +128,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center text-sun font-black uppercase tracking-widest">
+        Catching Rays... ☀️
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
