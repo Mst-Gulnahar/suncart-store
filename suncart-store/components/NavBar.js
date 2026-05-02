@@ -26,7 +26,6 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
-    { name: "My Profile", href: "/profile" },
   ];
 
   return (
@@ -34,8 +33,8 @@ export default function Navbar() {
       <div className="max-w-5xl mx-auto">
         <nav className="bg-sun/90 backdrop-blur-lg border-4 border-white rounded-full px-8 py-2 shadow-2xl flex items-center justify-between">
           
-          {/* 🏠 Desktop Left Links */}
-          <div className="hidden md:flex items-center gap-6 flex-1">
+          {/* 🏠 Desktop/Tablet Links */}
+          <div className="hidden lg:flex items-center gap-6 flex-1">
             {navLinks.map((link) => (
               <Link 
                 key={link.name}
@@ -47,6 +46,16 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
+            {session && (
+              <Link 
+                href="/profile"
+                className={`font-black text-sm uppercase tracking-tighter transition-all hover:text-dragonfruit ${
+                  pathname === "/profile" ? "text-dragonfruit" : "text-white"
+                }`}
+              >
+                My Profile
+              </Link>
+            )}
           </div>
 
           {/* ☀️ Center Logo */}
@@ -58,27 +67,35 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* 🔐 Desktop Right Side */}
-          <div className="hidden md:flex items-center justify-end gap-4 flex-1">
+          {/* 🔐 Desktop/Tablet User Controls */}
+          <div className="hidden lg:flex items-center justify-end gap-4 flex-1">
             {!isPending && (
               <>
                 {session ? (
-                  <div className="flex items-center gap-3 bg-white/30 p-1 pr-4 rounded-full border border-white/40">
-                    <div className="avatar online">
-                      <div className="w-8 h-8 rounded-full ring-2 ring-white">
+                  <div className="flex items-center gap-2 bg-white/20 backdrop-blur-xl p-1.5 pr-3 rounded-full border border-white/40 shadow-inner group">
+                    <Link href="/profile" className="avatar online hover:scale-110 transition-transform duration-300">
+                      <div className="w-9 h-9 rounded-full ring-2 ring-white shadow-md">
                         <img 
                           src={session.user.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.name}`} 
                           alt="user" 
                         />
                       </div>
+                    </Link>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] font-black text-white uppercase tracking-tighter border-r border-white/20 pr-3">
+                        {session.user.name.split(' ')[0]}
+                      </span>
+                      <button onClick={handleLogout} className="flex items-center gap-1.5 font-black text-white hover:text-dragonfruit transition-colors">
+                        <span className="text-[9px] uppercase tracking-widest">Log Out</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                      </button>
                     </div>
-                    <button onClick={handleLogout} className="font-black text-white hover:text-dragonfruit text-[10px] uppercase tracking-widest">
-                      Log out 🚪
-                    </button>
                   </div>
                 ) : (
                   <>
-                    <Link href="/login" className="px-6 py-2 bg-white text-sun rounded-full font-black text-sm hover:bg-dragonfruit hover:text-white transition-all">Login</Link>
+                    <Link href="/login" className="px-6 py-2 bg-white text-sun rounded-full font-black text-sm hover:bg-dragonfruit hover:text-white transition-all shadow-md">Login</Link>
                     <Link href="/register" className="px-6 py-2 border-2 border-white text-white rounded-full font-black text-sm hover:bg-white hover:text-sun transition-all">Register</Link>
                   </>
                 )}
@@ -86,11 +103,11 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* 📱 Mobile Menu Button (Reverted to your clean SVG style) */}
-          <div className="md:hidden flex-1 flex justify-end">
+          {/* 📱 Mobile/Tablet Menu Button */}
+          <div className="lg:hidden flex-1 flex justify-end">
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-white bg-dragonfruit p-2 rounded-full shadow-lg active:scale-90 transition-transform"
+              className="text-white bg-dragonfruit p-3 rounded-full shadow-lg active:scale-90 transition-transform"
             >
               {isMenuOpen ? (
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -105,38 +122,52 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* 🚀 Mobile Sun Menu */}
+        {/* 🚀 Mobile/Tablet Sun Menu Overlay */}
         {isMenuOpen && (
-          <div className="md:hidden mt-4 relative overflow-hidden bg-white rounded-[3rem] p-10 shadow-2xl border-4 border-sun animate-in fade-in zoom-in-95 duration-300">
-            {/* Background Decorative Sun */}
+          <div className="lg:hidden mt-4 relative overflow-hidden bg-white rounded-[3rem] p-10 shadow-2xl border-4 border-sun animate-in fade-in zoom-in-95 duration-300">
             <div className="absolute inset-0 flex items-center justify-center opacity-[0.07] pointer-events-none select-none">
               <span className="text-[250px] animate-spin-slow">☀️</span>
             </div>
 
             <div className="relative z-10 flex flex-col gap-6 items-center">
+              
+              {/* Profile Header for Mobile/Tablet */}
+              {session && (
+                <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="flex flex-col items-center gap-2 mb-4">
+                  <div className="avatar online">
+                    <div className="w-20 h-20 rounded-full ring-4 ring-sun shadow-xl">
+                       <img src={session.user.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${session.user.name}`} alt="user" />
+                    </div>
+                  </div>
+                  <span className="text-xl font-black text-sun uppercase tracking-widest">{session.user.name}</span>
+                </Link>
+              )}
+
+              {/* Navigation Links */}
               {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  href={link.href} 
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`text-3xl font-black tracking-tighter uppercase transition-colors ${
-                    pathname === link.href ? "text-dragonfruit" : "text-neutral/80"
-                  }`}
+                <Link key={link.name} href={link.href} onClick={() => setIsMenuOpen(false)}
+                  className={`text-3xl font-black tracking-tighter uppercase transition-colors ${pathname === link.href ? "text-dragonfruit" : "text-neutral/80"}`}
                 >
                   {link.name}
                 </Link>
               ))}
+              
+              {/* Profile Link in Mobile List */}
+              {session && (
+                <Link href="/profile" onClick={() => setIsMenuOpen(false)}
+                  className={`text-3xl font-black tracking-tighter uppercase transition-colors ${pathname === "/profile" ? "text-dragonfruit" : "text-neutral/80"}`}
+                >
+                  My Profile
+                </Link>
+              )}
               
               <div className="w-full h-1 bg-sun/20 rounded-full my-2"></div>
 
               {!isPending && (
                 <div className="w-full flex flex-col gap-4">
                   {session ? (
-                    <button 
-                      onClick={handleLogout}
-                      className="btn btn-block h-16 bg-dragonfruit text-white rounded-2xl font-black border-none text-lg"
-                    >
-                      Log Out 🚪
+                    <button onClick={handleLogout} className="btn btn-block h-16 bg-dragonfruit text-white rounded-2xl font-black border-none text-lg flex items-center justify-center gap-3">
+                      Exit 🚪
                     </button>
                   ) : (
                     <>

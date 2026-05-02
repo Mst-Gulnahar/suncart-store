@@ -1,13 +1,16 @@
 "use client";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const callbackURL = searchParams.get("callbackURL") || "/";
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,26 +21,28 @@ export default function LoginPage() {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    const { data, error: authError } = await authClient.signIn.email({
+    await authClient.signIn.email({
       email,
       password,
-      callbackURL: "/", 
+      
+      callbackURL: callbackURL, 
+    }, {
+      onSuccess: () => {
+        console.log("Login successful");
+        router.push(callbackURL); 
+        router.refresh(); 
+      },
+      onError: (ctx) => {
+        setError(ctx.error.message || "Invalid email or password");
+        setLoading(false);
+      }
     });
-
-    if (authError) {
-      setError(authError.message || "Invalid email or password");
-      setLoading(false);
-    } else {
-      console.log("Login successful:", data);
-      router.push("/"); 
-      router.refresh(); 
-    }
   };
 
   const handleGoogleLogin = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/",
+      callbackURL: callbackURL, 
     });
   };
 
@@ -84,7 +89,7 @@ export default function LoginPage() {
             <button 
               type="submit"
               disabled={loading}
-              className={`btn btn-block bg-sun hover:bg-tangerine border-none text-neutral font-black text-lg shadow-lg shadow-sun/20 rounded-2xl transition-all ${loading ? 'opacity-50' : ''}`}
+              className={`btn btn-block bg-sun hover:bg-tangerine border-none text-neutral font-black text-lg shadow-lg shadow-sun/20 rounded-2xl transition-all ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {loading ? (
                 <span className="loading loading-spinner loading-sm"></span>

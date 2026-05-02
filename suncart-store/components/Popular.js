@@ -2,11 +2,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import products from '../data/products.json';
+import { authClient } from "@/lib/auth-client"; 
 
 export default function Popular() {
   const [activeIndex, setActiveIndex] = useState(1);
   const [isPaused, setIsPaused] = useState(false); 
   const popularProducts = products.slice(0, 3);
+
+  // Check for session to protect detail links
+  const { data: session, isPending } = authClient.useSession();
 
   const brands = [
     { name: "SunShade", logo: "🕶️", desc: "Premium Eye Protection" },
@@ -69,8 +73,15 @@ export default function Popular() {
 
                 <div className={`relative bg-white rounded-[3.5rem] p-4 shadow-2xl border-4 transition-colors duration-1000 ${isActive ? 'border-sun' : 'border-white'}`}>
                    
+                   {/* Rank Badge */}
                    <div className={`absolute top-6 left-6 z-20 text-white w-10 h-10 rounded-full flex items-center justify-center font-black shadow-lg transition-colors duration-1000 ${isActive ? 'bg-dragonfruit' : 'bg-neutral'}`}>
                       #{index + 1}
+                   </div>
+
+                   {/* ⭐ Rating Badge (NEW) */}
+                   <div className="absolute top-6 right-6 z-20 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1 shadow-md border border-sun/20">
+                      <span className="text-sun text-xs">★</span>
+                      <span className="font-black text-neutral text-xs">{product.rating}</span>
                    </div>
 
                    <div className="overflow-hidden rounded-[2.8rem] aspect-[4/5] relative bg-gray-50">
@@ -85,11 +96,16 @@ export default function Popular() {
                       <h3 className="font-black text-2xl text-neutral mb-1 uppercase tracking-tighter">{product.name}</h3>
                       <p className="text-dragonfruit font-black text-3xl mb-4">${product.price}</p>
                       
+                      {/* Auth Protected Link */}
                       <Link 
-                        href={`/products/${product.id}`} 
-                        className={`btn btn-block border-none text-white rounded-2xl transition-all ${isActive ? 'bg-dragonfruit hover:bg-tangerine' : 'bg-neutral hover:bg-dragonfruit'}`}
+                        href={session ? `/products/${product.id}` : "/login"} 
+                        className={`btn btn-block border-none text-white rounded-2xl transition-all font-black uppercase tracking-widest text-xs h-14 shadow-md ${
+                          isActive 
+                            ? (session ? 'bg-dragonfruit hover:bg-tangerine shadow-dragonfruit/20' : 'bg-neutral hover:bg-black') 
+                            : (session ? 'bg-neutral hover:bg-dragonfruit' : 'bg-neutral/40 hover:bg-neutral')
+                        }`}
                       >
-                        {isActive ? 'Grab This Deal 🔥' : 'View Details'}
+                        {isPending ? "..." : session ? (isActive ? 'Grab This Deal 🔥' : 'View Details') : 'Login to View'}
                       </Link>
                    </div>
                 </div>
@@ -102,7 +118,6 @@ export default function Popular() {
       {/* ➕ EXTRA SECTION: SUMMER CARE TIPS */}
       <div className="relative mx-4">
         <div className="bg-gradient-to-br from-sun/40 to-tangerine/20 rounded-[4rem] p-12 overflow-hidden">
-            {/* Floating decoration */}
             <div className="absolute -top-10 -right-10 text-9xl opacity-10 rotate-12">☀️</div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">

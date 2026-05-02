@@ -1,8 +1,13 @@
+"use client";
 import Link from 'next/link';
 import products from '../data/products.json';
 import Popular from '../components/Popular';
+import { authClient } from "@/lib/auth-client"; 
 
 export default function Home() {
+  // Check if user is logged in
+  const { data: session, isPending } = authClient.useSession();
+  
   // Display the first 6 products
   const allProducts = products.slice(0, 6);
 
@@ -69,17 +74,15 @@ export default function Home() {
           {allProducts.map((product) => (
             <div key={product.id} className="group flex flex-col">
               
-              {/* Tightened Card: Hover border changed to raspberry/5 for a subtler glow */}
               <div className="bg-white rounded-[3rem] p-5 shadow-sm group-hover:shadow-lg transition-all duration-300 border-2 border-transparent group-hover:border-raspberry/5 relative overflow-hidden flex flex-col flex-1">
                  
-                 {/* Product Image Container: Constrained size */}
+                 {/* Product Image Container */}
                  <div className="overflow-hidden rounded-[2.5rem] mb-6 aspect-square w-full relative bg-gray-50">
                     <img 
                         src={product.image} 
                         alt={product.name} 
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    {/* Hover Overlay Badge - Made smaller */}
                     <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <span className="bg-white/90 backdrop-blur text-dragonfruit font-black px-3 py-1.5 rounded-full text-[10px] shadow-sm uppercase tracking-tighter">
                            Quick View
@@ -109,11 +112,16 @@ export default function Home() {
                             <span>★</span> {product.rating}
                         </div>
                         
+                        {/* Protected Link Logic */}
                         <Link 
-                            href={`/products/${product.id}`} 
-                            className="btn bg-dragonfruit border-none text-white btn-sm rounded-xl px-6 hover:bg-tangerine transition-all active:scale-95 text-xs font-black shadow-md shadow-dragonfruit/10"
+                            href={session ? `/products/${product.id}` : "/login"} 
+                            className={`btn border-none text-white btn-sm rounded-xl px-6 transition-all active:scale-95 text-[10px] font-black shadow-md uppercase tracking-tight ${
+                              session 
+                              ? "bg-dragonfruit hover:bg-tangerine shadow-dragonfruit/20" 
+                              : "bg-neutral hover:bg-black shadow-black/10"
+                            }`}
                         >
-                            Details
+                            {isPending ? "Checking..." : session ? "Details" : "Login to View"}
                         </Link>
                       </div>
                     </div>
