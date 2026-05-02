@@ -29,7 +29,7 @@ Special thanks to the open-source community for the amazing tools that made this
 
 Welcome to **SunCart**, your ultimate modern destination for everything summer! From UV-protection shades to beach-ready outfits, we bring the sunshine to your shopping experience. This project was built as a high-performance eCommerce platform focusing on unique design, smooth animations, and secure authentication.
 
-### 🔗 [**Live Site Link**](ADD_YOUR_LIVE_LINK_HERE)
+### 🔗 [**Live Site Link**](https://suncart-store-two.vercel.app/)
 
 ---
 
