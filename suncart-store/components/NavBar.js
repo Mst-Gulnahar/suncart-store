@@ -167,7 +167,7 @@ export default function Navbar() {
                 <div className="w-full flex flex-col gap-4">
                   {session ? (
                     <button onClick={handleLogout} className="btn btn-block h-16 bg-dragonfruit text-white rounded-2xl font-black border-none text-lg flex items-center justify-center gap-3">
-                      Exit 🚪
+                      Log Out 🚪
                     </button>
                   ) : (
                     <>

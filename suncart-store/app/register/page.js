@@ -8,6 +8,9 @@ export default function RegisterPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [isPending, setIsPending] = useState(false);
+  
+  // 👁️ State for password visibility toggle
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -24,9 +27,7 @@ export default function RegisterPage() {
       email: email,
       password: password,
       name: name,
-      
       image: photoUrl || undefined, 
-      
       callbackURL: "/login", 
     });
 
@@ -34,11 +35,9 @@ export default function RegisterPage() {
 
     if (authError) {
       console.error("Registration failed:", authError);
-     
       setError(authError.message || "An error occurred during registration."); 
     } else {
       console.log("User created successfully:", data);
-      
       router.push("/login");
     }
   };
@@ -54,7 +53,6 @@ export default function RegisterPage() {
             <p className="text-neutral/60 font-bold mt-2">Start your summer journey with SunCart</p>
           </div>
 
-          {/* Real Error Display */}
           {error && (
             <div className="bg-red-50 border-2 border-red-200 text-red-600 px-4 py-3 rounded-2xl mb-6 font-bold text-sm animate-bounce">
               ⚠️ {error}
@@ -96,13 +94,28 @@ export default function RegisterPage() {
 
             <div className="form-control">
               <label className="label font-black text-xs uppercase tracking-widest text-neutral/50">Create Password</label>
-              <input 
-                name="password" 
-                type="password" 
-                placeholder="••••••••" 
-                className="input input-bordered rounded-2xl border-2 focus:border-tangerine outline-none" 
-                required 
-              />
+              <div className="relative">
+                <input 
+                  name="password" 
+                  // 🔄 Toggle between password and text
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="••••••••" 
+                  className="input input-bordered w-full rounded-2xl border-2 focus:border-tangerine outline-none pr-12" 
+                  required 
+                />
+                {/* 👁️ Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral/40 hover:text-dragonfruit transition-colors"
+                >
+                  {showPassword ? (
+                    <span className="text-xs font-black uppercase tracking-tighter">Hide</span>
+                  ) : (
+                    <span className="text-xs font-black uppercase tracking-tighter">Show</span>
+                  )}
+                </button>
+              </div>
             </div>
 
             <button 

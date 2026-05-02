@@ -9,6 +9,9 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  // 👁️ State for password visibility toggle
+  const [showPassword, setShowPassword] = useState(false);
 
   const callbackURL = searchParams.get("callbackURL") || "/";
 
@@ -24,11 +27,9 @@ export default function LoginPage() {
     await authClient.signIn.email({
       email,
       password,
-      
       callbackURL: callbackURL, 
     }, {
       onSuccess: () => {
-        console.log("Login successful");
         router.push(callbackURL); 
         router.refresh(); 
       },
@@ -58,7 +59,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="bg-red-50 border-2 border-red-200 text-red-600 px-4 py-3 rounded-2xl mb-6 font-bold text-sm animate-shake">
+            <div className="bg-red-50 border-2 border-red-200 text-red-600 px-4 py-3 rounded-2xl mb-6 font-bold text-sm">
               ⚠️ {error}
             </div>
           )}
@@ -66,6 +67,7 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="form-control">
               <label className="label font-black text-xs uppercase tracking-widest text-neutral/40 text-left">Your Email</label>
+              {/* User can type freely here */}
               <input 
                 name="email" 
                 type="email" 
@@ -77,13 +79,28 @@ export default function LoginPage() {
 
             <div className="form-control">
               <label className="label font-black text-xs uppercase tracking-widest text-neutral/40 text-left">Password</label>
-              <input 
-                name="password" 
-                type="password" 
-                placeholder="••••••••" 
-                className="input input-bordered bg-gray-50 rounded-2xl border-2 focus:border-sun outline-none transition-all" 
-                required 
-              />
+              <div className="relative">
+                <input 
+                  name="password" 
+                  // 🔄 Toggle type between "password" and "text"
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="••••••••" 
+                  className="input input-bordered w-full bg-gray-50 rounded-2xl border-2 focus:border-sun outline-none transition-all pr-12" 
+                  required 
+                />
+                {/* 👁️ Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral/40 hover:text-sun transition-colors"
+                >
+                  {showPassword ? (
+                    <span className="text-xs font-black uppercase">Hide</span>
+                  ) : (
+                    <span className="text-xs font-black uppercase">Show</span>
+                  )}
+                </button>
+              </div>
             </div>
 
             <button 
@@ -104,7 +121,7 @@ export default function LoginPage() {
             type="button"
             className="btn btn-block bg-white border-2 border-neutral/10 rounded-2xl font-black shadow-sm hover:bg-neutral hover:text-white transition-all flex items-center justify-center gap-2 group"
           >
-            <span className="group-hover:scale-110 transition-transform">Continue with Google</span>
+            <span>Continue with Google</span>
           </button>
 
           <p className="text-center mt-10 font-bold text-sm text-neutral/60">
